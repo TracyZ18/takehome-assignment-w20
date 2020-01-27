@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- PART 1: Pass in a "complete" prop here -->
-    <Instructions />
+    <Instructions :complete="true"/>
     <!-- PART 4: Modify the Show component to accept all of these props -->
     <Show
       v-for="show in shows"
@@ -10,6 +10,12 @@
       :name="show.name"
       :episodes_seen="show.episodes_seen"
     />
+    <br>
+    <input v-model="pName" placeholder="Name">
+    <input v-model="pEp" placeholder="Episodes seen">
+    <button v-on:click="add_show(pName,pEp)">Add</button>
+    <br>
+    <br>
   </div>
 </template>
 
@@ -24,12 +30,18 @@ export default {
   },
   data() {
     return {
+      complete: Boolean,
       shows: [
         { id: 1, name: "Game of Thrones", episodes_seen: 0 },
         { id: 2, name: "Naruto", episodes_seen: 220 },
         { id: 3, name: "Black Mirror", episodes_seen: 3 }
       ]
     };
+  },
+  methods: {
+    add_show: function(pName, pEp) {
+      this.shows.push({"id": shows[-1]["id"]+1, "name": pName, "episodes_seen": pEp});
+    }
   }
 };
 </script>
