@@ -86,12 +86,15 @@ def post_show():
 def put_show(id):
     id = int(id)
     update_values = db.getById("shows",id)
+    # id not found
     if update_values is None:
         return create_response(status=404, message="ID not found.")
     name = request.args.get("name")
     episodes_seen = request.args.get("episodes_seen")
+    # no changes provided
     if name is None and episodes_seen is None:
         return create_response({"name":name},status=422, message='Must provide "name" or "episodes_seen" or both')
+    # make changes
     if name is not None:
         update_values["name"] = name
     if episodes_seen is not None:
