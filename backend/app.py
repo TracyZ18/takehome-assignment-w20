@@ -64,7 +64,40 @@ def delete_show(id):
 
 
 # TODO: Implement the rest of the API here!
+@app.route("/shows/<id>", methods=['GET'])
+def get_show(id):
+    show = db.getById('shows', int(id))
+    if show is None:
+        return create_response(status=404, message="ID not found.")
+    return create_response({"id": id, "name": show["name"],"episodes_seen": show["episodes_seen"]})
 
+@app.route("/shows", methods=['POST'])
+def post_show():
+    name = request.args.get("name")
+    episodes_seen = request.args.get("episodes_seen")
+    if name is None or episodes_seen is None:
+        return create_response({"name":name},status=422, message='Must provide "name" and "episodes_seen"')
+    payload = {"id":-1, "name":name, "episodes_seen":episodes_seen}
+    payload = db.create("shows",payload)
+    #return create_response(payload,status=201)
+    return create_response(payload,status=201)
+
+@app.route("/shows/<id>", methods=['PUT'])
+def put_show(id):
+    id = int(id)
+    update_values = db.getById("shows",id)
+    if update_values is None:
+        return create_response(status=404, message="ID not found.")
+    name = request.args.get("name")
+    episodes_seen = request.args.get("episodes_seen")
+    if name is None and episodes_seen is None:
+        return create_response({"name":name},status=422, message='Must provide "name" or "episodes_seen" or both')
+    if name is not None:
+        update_values["name"] = name
+    if episodes_seen is not None:
+        update_values["episodes_seen"] = episodes_seen
+    update_values = db.updateById("shows",id,update_values)
+    return create_response(update_values,status=201)
 
 
 """
